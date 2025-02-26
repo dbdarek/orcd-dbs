@@ -19,7 +19,7 @@ Create new directory where we can prepare the backup:  # mkdir ./mariadb
 
 uncompress the base backup:
 
-$ pigz backup_base.gz -dc -p 2 | mbstream --directory=./mariadb -x --parallel=2  Sync the backup with changes contained in the InnoDB redo log
+$ pigz backup_base.gz -dc -p 2 | mbstream --directory=./mariadb -x --parallel=2   
 
 prepare it - sync the base backup with changes contained in the InnoDB redo log
 
