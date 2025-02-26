@@ -38,7 +38,6 @@ $ mariabackup --copy-back \
    --target-dir=./mariadb
 
 
-recover Point-in-Time 
-use binary Logs to restore to desired point in time.
+recover Point-in-Time - use binary Logs to restore to desired point in time.
 
 $ mysqlbinlog --start-position=START_POSITION binlog.000001 | mysql -u username -p 
