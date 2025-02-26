@@ -1,4 +1,5 @@
-To Backup database run  db_backup.sh
+
+Backup database run  db_backup.sh
 --------------------------------------------
 
 Script will run daily creating new full backup every Sunday, 
@@ -14,31 +15,30 @@ if option "-e|--exp" is used it will create logical dump/export"
 To Restore database from full/inc backup(s)
 --------------------------------------------
 
-Create new directory where we can prepare the backup:  
+Create new directory where we can prepare the backup:  # mkdir ./mariadb
 
-# mkdir ./mariadb
+uncompress the base backup:
 
-Uncompress the latest full/base backup:
+$ pigz backup_base.gz -dc -p 2 | mbstream --directory=./mariadb -x --parallel=2  Sync the backup with changes contained in the InnoDB redo log
 
-# pigz backup_base.gz -dc -p 2 | mbstream --directory=./mariadb -x --parallel=2  
+prepare it - sync the base backup with changes contained in the InnoDB redo log
 
-Prepare it - sync the base backup with changes contained in the InnoDB redo log 
-
-# mariabackup --prepare \
+$ mariabackup --prepare \
   --target-dir=./mariadb 
 
-Apply the incremental changes to the full backup:
+apply the incremental changes to the base full backup:
 
-# mariabackup --prepare \
+$ mariabackup --prepare \
    --target-dir=./mariadb \
    --incremental-dir=/mariadb/bkp/full/inc/DAYTIME
  
-Use the mariabackup --copy-back option to copy the backup to data directory
+use the mariabackup --copy-back option to copy the backup to data directory
 
-# mariabackup --copy-back \
+$ mariabackup --copy-back \
    --target-dir=./mariadb
 
-Point-in-Time Recovery 
-Use Binary Logs to restore to desired point in time, apply binary logs in sequence
 
-# mysqlbinlog --start-position=START_POSITION binlog.000001 | mysql -u username -p 
+recover Point-in-Time 
+use binary Logs to restore to desired point in time.
+
+$ mysqlbinlog --start-position=START_POSITION binlog.000001 | mysql -u username -p 
